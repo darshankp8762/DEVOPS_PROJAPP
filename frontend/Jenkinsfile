@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "darshankp1/frontent-app"
+        TAG = "${BUILD_NUMBER}"
+    }
+
+    stages {
+
+        stage('Build Frontend Image') {
+            steps {
+                sh 'docker build -t $IMAGE_NAME:$TAG frontend/'
+            }
+        }
+
+        stage('Docker Login & Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-creds',
+                    usernameVariable: 'USER',
+                    passwordVariable: 'PASS'
+                )]) {
+                    sh '''
+                    echo $PASS | docker login -u $USER --password-stdin
+                    docker push $IMAGE_NAME:$TAG
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy Frontend') {
+            steps {
+                sh '''
+                export KUBECONFIG=/home/darshan_kp/.kube/config
+                kubectl set image deployment/frontend-deployment \
+                frontend-container=$IMAGE_NAME:$TAG --record
+                '''
+            }
+        }
+    }
+}
