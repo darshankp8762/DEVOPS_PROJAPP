@@ -33,7 +33,7 @@ pipeline {
             steps {
                 sh '''
                 export KUBECONFIG=/home/darshan_kp/.kube/config
-                kubectl apply -f deployment.yaml
+                kubectl apply -f backend/deployment.yaml
                 kubectl set image deployment/backend-deployment \
                 backend-container=$IMAGE_NAME:$TAG --record
                 '''

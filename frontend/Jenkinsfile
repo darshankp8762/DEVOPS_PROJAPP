@@ -33,7 +33,7 @@ pipeline {
             steps {
                 sh '''
                 export KUBECONFIG=/home/darshan_kp/.kube/config
-                kubectl apply -f deployment.yaml
+                kubectl apply -f frontend/deployment.yaml
                 kubectl set image deployment/frontend-deployment \
                 frontend-container=$IMAGE_NAME:$TAG --record
                 '''
