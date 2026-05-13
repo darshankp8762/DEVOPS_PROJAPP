@@ -17,3 +17,29 @@ spec:
         image: darshankp1/backend-app:v1
         ports:
         - containerPort: 5000
+        sudo apt update 
+sudo apt install apt-transport-https ca-certificates curl software-properties-common -y 
+sudo apt install docker.io -y
+from flask import Flask
+
+app = Flask(_name_)
+
+@app.route('/')
+def home():
+    return "Hello! I am running inside Docker."
+
+if _name_ == '_main_':
+    app.run(host='0.0.0.0', port=5000)
+  FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY app.py .
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]
